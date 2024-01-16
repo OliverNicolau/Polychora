@@ -1,0 +1,4 @@
+name = "Polychora"
+uuid = "0b8c5dac-b004-4969-b010-9312e802a3e5"
+authors = ["Nemo <nemo@debian>"]
+version = "0.1.0"
