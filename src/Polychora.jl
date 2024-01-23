@@ -6,6 +6,7 @@ module Polychora
 #using Revise, Test, Plots, Graphs, GraphPlot, GraphRecipes, Statistics # extra libraries
 #using NearestNeighbors, DataStructures, LazySets, Polyhedra, MeshCat # even more extra libraries
 
+using ProgressBars
 using Oscar
 using Revise
 
@@ -72,19 +73,30 @@ end
 function random_convex_lift_test(d = 4, n = 10, rep = 100)
     for iter in 0:rep
         polytope = parabolic_lift(parabolic_lift(rand(n,d-2)))
-        fvector = f_vector(polytope)
-        #println("f⁰ = ", nvertices(polytope))
-        #println("fᵈ⁻¹ = ", nfacets(polytope))
-        #println(fvector)
         if is_polytope_neighbourly(polytope)
             println(vertices(polytope))
         end
     end
 end
 
+function cyclic_lift_test(d = 4, max_n = 100)
+    test_result = true
+    for n in ProgressBar(2:max_n)
+        polytope = parabolic_lift(moment_curve_polytope(d-1,n))
+        test_result = test_result && is_polytope_neighbourly(polytope)
+        if !is_polytope_neighbourly(polytope)
+            println(d,n)
+            println(vertices(polytope))
+        end
+    end
+    if test_result
+        println("All tested cyclic politopes in d-1, lifted to the paraboloid in d, are neighborly")
+    end
+end
+
 # Export
-export random_polytope_test, random_convex_lift_test
-export moment_curve_polytope, parabolic_lift, is_fvector_neighborly
+export random_polytope_test, random_convex_lift_test, cyclic_lift_test
+#export moment_curve_polytope, parabolic_lift, is_fvector_neighborly
 
 # Includes
 #include("test.jl")
